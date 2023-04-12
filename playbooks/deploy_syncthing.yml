@@ -1,20 +1,17 @@
 # deploy_syncthing.yml
 ---
-- name: Deploy Samba using Docker role
-  hosts: all
+
+- name: Deploy Syncthing using Docker
+  hosts: nuc115
   become: true
+
   roles:
     - docker
 
-- name: Deploy Syncthing using Docker
-  hosts: docker
-  become: true
-  vars_files:
-    - roles/docker/vars/secrets.yml
   tasks:
     - name: Include encrypted secrets
       ansible.builtin.include_vars:
-        file: roles/docker/vars/secrets.yml
+        file: ../roles/docker/vars/secrets.yml
         name: secrets
 
     - name: Ensure Docker is installed
