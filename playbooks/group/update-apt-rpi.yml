@@ -1,0 +1,22 @@
+---
+- name: Update and upgrade Raspberry Pi
+  hosts: rpi
+  become: true
+
+  tasks:
+    - name: Update apt cache
+      ansible.builtin.apt:
+        update_cache: true
+
+    - name: Upgrade packages with dist-upgrade
+      ansible.builtin.apt:
+        upgrade: dist
+      register: apt_result
+      notify: Reboot required
+
+  handlers:
+    - name: Reboot
+      ansible.builtin.reboot:
+        reboot_timeout: 300
+      when: apt_result.changed
+      listen: Reboot required

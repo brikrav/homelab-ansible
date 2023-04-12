@@ -1,0 +1,7 @@
+---
+# tasks file for docker
+# roles/docker/tasks/main.yml
+- name: Include encrypted secrets
+  ansible.builtin.include_vars:
+    file: secrets.yml
+    name: secrets

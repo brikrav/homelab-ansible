@@ -1,0 +1,10 @@
+
+# defaults file for ubuntu_common
+---
+common_packages:
+  - htop
+  - zsh
+  - curl
+  - git
+
+timezone: "America/New_York"

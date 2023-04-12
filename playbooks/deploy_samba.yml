@@ -1,0 +1,45 @@
+---
+- name: Deploy Samba using Docker role
+  hosts: all
+  become: yes
+  roles:
+    - docker
+- name: Include encrypted secrets
+  ansible.builtin.include_vars:
+    file: secrets.yml
+    name: secrets
+
+- name: Ensure Docker is installed
+  ansible.builtin.package:
+    name: docker
+    state: present
+
+- name: Ensure Docker is running
+  ansible.builtin.service:
+    name: docker
+    state: started
+    enabled: true
+
+- name: Deploy Samba container
+  community.docker.docker_container:
+    name: samba
+    image: dperson/samba
+    state: started
+    restart_policy: unless-stopped
+    tty: true
+    ports:
+      - "137:137/udp"
+      - "138:138/udp"
+      - "139:139/tcp"
+      - "445:445/tcp"
+    env:
+      TZ: "{{ secrets.tz }}"
+      USERID: "{{ secrets.puid }}"
+      GROUPID: "{{ secrets.pgid }}"
+    volumes:
+      - "/home/bri:/home:z"
+    command: >
+      -w "WORKGROUP"
+      -u "{{ secrets.samba_user }};{{ secrets.samba_password }}"
+      -s "home;/home;yes;no;no;{{ secrets.samba_user }};{{ secrets.samba_user }};{{ secrets.samba_user }}"
+      -p

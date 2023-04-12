@@ -1,0 +1,33 @@
+#Proxmox Hosts
+[pxmve]
+{{ inventory_hostname }} ansible_host={{ ansible_host }} ansible_user={{ ansible_user }}
+{{ inventory_hostname }} ansible_host={{ ansible_host }} ansible_user={{ ansible_user }}
+{{ inventory_hostname }} ansible_host={{ ansible_host }} ansible_user={{ ansible_user }}
+
+#Proxmox VM
+[uvm]
+{{ inventory_hostname }} ansible_host={{ ansible_host }} ansible_user={{ ansible_user }}
+{{ inventory_hostname }} ansible_host={{ ansible_host }} ansible_user={{ ansible_user }}
+{{ inventory_hostname }} ansible_host={{ ansible_host }} ansible_user={{ ansible_user }}
+
+# Proxmox Container
+[pmct]
+{{ inventory_hostname }} ansible_host={{ ansible_host }} ansible_user={{ ansible_user }}
+
+# Bare metal
+[ubnt]
+{{ inventory_hostname }} ansible_host={{ ansible_host }} ansible_user={{ ansible_user }}
+
+# Raspberry Pi OS
+[rpi]
+{{ inventory_hostname }} ansible_host={{ ansible_host }} ansible_user={{ ansible_user }}
+
+# Unifi Controller
+[unms]
+{{ inventory_hostname }} ansible_host={{ ansible_host }} ansible_user={{ ansible_user }}
+
+# All Ubuntu
+[ubuntu_hosts:children]
+{{ inventory_hostname }}
+{{ inventory_hostname }}
+{{ inventory_hostname }}

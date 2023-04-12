@@ -1,0 +1,6 @@
+---
+- name: Apply Ubuntu common configurations
+  hosts: ubuntu_hosts
+  become: true
+  roles:
+    - ubuntu_common

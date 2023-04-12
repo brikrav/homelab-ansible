@@ -1,0 +1,13 @@
+---
+- name: Update packages on all hosts
+  hosts: vu26
+  become: true
+  tasks:
+    - name: Update package cache
+      ansible.builtin.apt:
+        update_cache: true
+
+    - name: Upgrade packages
+      ansible.builtin.apt:
+        upgrade: true
+        autoremove: true

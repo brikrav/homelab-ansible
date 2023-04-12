@@ -1,0 +1,22 @@
+# Ansible Vault
+*secret.yml
+**secrets*
+
+# Ansible Hosts and Config
+hosts.ini
+ansible.cfg
+
+# SSH keys
+*.key
+*.pem
+*.ppk
+*.pub
+
+# Virtual environment and tests
+venv/
+**test*
+.vscode
+
+# Logs and configuration files
+*.log
+
