@@ -1,0 +1,27 @@
+---
+- name: Orchestrate Ubuntu hosts
+  hosts: ubuntu_hosts
+  become: true
+  gather_facts: true
+  roles:
+    - ubuntu-generic
+
+  tasks:
+    - name: Add Git and Ansible PPAs
+      ansible.builtin.apt_repository:
+        repo: "{{ item }}"
+        state: present
+      loop:
+        - ppa:git-core/ppa
+
+    - name: Update apt cache
+      ansible.builtin.apt:
+        update_cache: true
+
+    - name: Install Git, Zsh, and Ansible
+      ansible.builtin.apt:
+        name:
+          - git
+          - zsh
+          - ansible
+        state: present
