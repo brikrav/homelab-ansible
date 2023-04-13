@@ -3,7 +3,6 @@
 
 - name: Deploy Syncthing using Docker
   hosts: nuc115
-  become: true
 
   roles:
     - docker

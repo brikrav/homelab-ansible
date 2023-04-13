@@ -1,7 +1,6 @@
 ---
 - name: Deploy Samba using Docker role
   hosts: nuc115
-  become: true
 
   roles:
     - docker
