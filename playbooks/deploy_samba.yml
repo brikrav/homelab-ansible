@@ -1,6 +1,6 @@
 ---
 - name: Deploy Samba using Docker role
-  hosts: nuc115
+  hosts: docker_hosts
 
   roles:
     - docker
@@ -11,23 +11,13 @@
         file: ../roles/docker/vars/secrets.yml
         name: secrets
 
-    - name: Ensure Docker is installed
-      ansible.builtin.package:
-        name: docker
-        state: present
-
-    - name: Ensure Docker is running
-      ansible.builtin.service:
-        name: docker
-        state: started
-        enabled: true
-
     - name: Deploy Samba container
       community.docker.docker_container:
         name: samba
         image: dperson/samba
         state: started
         restart_policy: unless-stopped
+        pull: true
         tty: true
         ports:
           - "137:137/udp"
@@ -45,3 +35,5 @@
           -u "{{ secrets.samba_user }};{{ secrets.samba_password }}"
           -s "home;/home;yes;no;no;{{ secrets.samba_user }};{{ secrets.samba_user }};{{ secrets.samba_user }}"
           -p
+        labels:
+          com.docker.compose.project: ansible-utils

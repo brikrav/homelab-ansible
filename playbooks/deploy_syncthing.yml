@@ -1,8 +1,6 @@
-# deploy_syncthing.yml
 ---
-
 - name: Deploy Syncthing using Docker
-  hosts: nuc115
+  hosts: docker_hosts
 
   roles:
     - docker
@@ -13,34 +11,27 @@
         file: ../roles/docker/vars/secrets.yml
         name: secrets
 
-    - name: Ensure Docker is installed
-      ansible.builtin.package:
-        name: docker
-        state: present
-
-    - name: Ensure Docker is running
-      ansible.builtin.service:
-        name: docker
-        state: started
-        enabled: true
-
     - name: Deploy Syncthing container
       community.docker.docker_container:
         name: syncthing
         image: lscr.io/linuxserver/syncthing:latest
-        hostname: "{{ inventory_hostname }}"
-        state: started
         restart_policy: unless-stopped
         env:
-          PUID: "{{ secrets.puid }}"
           PGID: "{{ secrets.pgid }}"
+          PUID: "{{ secrets.puid }}"
           TZ: "{{ secrets.tz }}"
+        hostname: "{{ inventory_hostname }}"
+        labels:
+          com.docker.compose.project: ansible-utils
+        ports:
+          - "8384:8384"
+          - "21027:21027/udp"
+          - "22000:22000/tcp"
+          - "22000:22000/udp"
+        pull: true
+        recreate: true
+        state: started
         volumes:
           - "~/apps/data/syncthing:/config"
           - "~/apps/secrets:/secrets"
           - "~/apps/backups:/backups"
-        ports:
-          - "8384:8384"
-          - "22000:22000/tcp"
-          - "22000:22000/udp"
-          - "21027:21027/udp"

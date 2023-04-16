@@ -5,3 +5,16 @@
   ansible.builtin.include_vars:
     file: secrets.yml
     name: secrets
+
+- name: Ensure Docker is installed
+  ansible.builtin.package:
+    name: docker
+    state: present
+  become: true
+
+- name: Ensure Docker is running
+  ansible.builtin.service:
+    name: docker
+    state: started
+    enabled: true
+  become: true

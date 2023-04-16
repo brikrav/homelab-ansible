@@ -1,6 +1,7 @@
 # Ansible Vault
 *secret.yml
 **secrets*
+vault_password_file
 
 # Ansible Hosts and Config
 hosts.ini
