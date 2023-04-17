@@ -1,0 +1,48 @@
+---
+- name: Deploy Telegraf in Docker container
+  hosts: docker_hosts
+  become: true
+  roles:
+    - docker
+
+  tasks:
+
+    - name: Include encrypted secrets
+      ansible.builtin.include_vars:
+        file: ../roles/docker/vars/secrets.yml
+        name: secrets
+
+    - name: Ensure /etc/telegraf directory exists
+      ansible.builtin.file:
+        path: /etc/telegraf
+        state: directory
+        owner: root
+        group: root
+        mode: "0755"
+
+    - name: Copy Telegraf configuration
+      ansible.builtin.copy:
+        src: ../roles/docker/files/telegraf.conf
+        dest: /etc/telegraf/telegraf.conf
+        owner: root
+        group: root
+        mode: "0644"
+      notify:
+        - restart telegraf
+
+    - name: Run Telegraf container
+      community.docker.docker_container:
+        name: telegraf
+        image: "telegraf:latest"
+        state: started
+        pull: true
+        restart_policy: always
+        env:
+          TELEGRAF_PUBLISH_ADDRESS: "{{ secrets.telegraf_publish_address }}"
+        volumes:
+          - "/var/run/docker.sock:/var/run/docker.sock"
+          - "/etc/telegraf/telegraf.conf:/etc/telegraf/telegraf.conf:ro"
+        labels:
+          com.docker.compose.project: ansible-utils
+      tags:
+        - telegraf
