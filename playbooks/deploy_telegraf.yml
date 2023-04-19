@@ -11,6 +11,7 @@
       ansible.builtin.include_vars:
         file: ../roles/docker/vars/secrets.yml
         name: secrets
+      notify: Restart Telegraf
 
     - name: Ensure /etc/telegraf directory exists
       ansible.builtin.file:
@@ -28,7 +29,7 @@
         group: root
         mode: "0644"
       notify:
-        - restart telegraf
+        - Restart telegraf
 
     - name: Run Telegraf container
       community.docker.docker_container:
@@ -37,8 +38,12 @@
         state: started
         pull: true
         restart_policy: always
+        recreate: true
+        hostname: "{{ inventory_hostname }}"
         env:
           TELEGRAF_PUBLISH_ADDRESS: "{{ secrets.telegraf_publish_address }}"
+          INFLUX_TOKEN: "{{ secrets.INFLUX_TOKEN }}"
+          USER: "{{ ansible_user }}"
         volumes:
           - "/var/run/docker.sock:/var/run/docker.sock"
           - "/etc/telegraf/telegraf.conf:/etc/telegraf/telegraf.conf:ro"
@@ -46,3 +51,5 @@
           com.docker.compose.project: ansible-utils
       tags:
         - telegraf
+      notify:
+        - Restart telegraf
